@@ -181,8 +181,8 @@ class TestSayCheese(unittest.TestCase):
         sol1 = sphere_intersects_line(s1, line)
         sol2 = sphere_intersects_line(s2, line)
 
-        self.assertEquals([(0.0, 0.0, 8.0), (0.0, 0.0, 2.0)], sol1)
-        self.assertEquals([(0.0, 0.0, 13.0), (0.0, 0.0, 7.0)], sol2)
+        self.assertEquals([(0.0, 0.0, 2.0), (0.0, 0.0, 8.0)], sol1)
+        self.assertEquals([(0.0, 0.0, 7.0), (0.0, 0.0, 13.0)], sol2)
 
     def test_union_multiple(self):
 
@@ -244,7 +244,29 @@ class TestSayCheese(unittest.TestCase):
 
         print 'Travel time = %d sec' % (t)
         
+    def _test_stuff(self):
 
+        a = (1, 2, 4)
+        b = (4, 1, 7)
+
+        v = map(lambda x, y: y - x, a, b)
+        print v
+
+        d = map(lambda x, y: x * y, a, b)
+        print d
+
+        p = sum(d)
+        print p
+
+        a = [(0,0,0), (0,0,2)]
+        b = [(4,0,8), (7,2,4)]
+        print dot_product(a, b)
+
+        va = map(lambda x, y: y - x, a[1], a[0])
+        vb = map(lambda x, y: y - x, b[1], b[0])
+
+        dp = sum(map(lambda x, y: x * y, va, vb))
+        print dp
 
 if __name__ == '__main__':
     unittest.main()

@@ -44,9 +44,8 @@ def sphere_intersects_line(sphere, line):
 
     """
 
-    vx = line[1][0] - line[0][0]
-    vy = line[1][1] - line[0][1]
-    vz = line[1][2] - line[0][2]
+    v = map(lambda x, y: y - x, line[1], line[0])
+    vx, vy, vz = v
 
     xp, yp, zp = line[0]
 
@@ -96,10 +95,10 @@ def dot_product(s, t):
     # each of the args is a pair of triples of numbers.  return the
     # dot product of the vectors formed by s0,s1 and t0,t1
 
-    v0 = (s[1][0] - s[0][0], s[1][1] - s[0][1], s[1][2] - s[0][2])
-    v1 = (t[1][0] - t[0][0], t[1][1] - t[0][1], t[1][2] - t[0][2])
+    vs = map(lambda x, y: y - x, s[1], s[0])
+    vt = map(lambda x, y: y - x, t[1], t[0])
 
-    return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2]
+    return sum(map(lambda x, y: x * y, vs, vt))
 
 def segment_length(s):
 
