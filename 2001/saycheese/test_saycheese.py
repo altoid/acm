@@ -4,6 +4,7 @@ import unittest
 from saycheese import *
 import math
 import pdb
+import random
 
 class TestSayCheese(unittest.TestCase):
 
@@ -27,7 +28,8 @@ class TestSayCheese(unittest.TestCase):
         line = [(1, 0, 0), (0, 1, 0)]
 
         solution = sphere_intersects_line(s, line)
-        print solution
+
+        self.assertEquals([(0.5, 0.5, 0.0)], solution)
 
     def test_union(self):
 
@@ -175,12 +177,12 @@ class TestSayCheese(unittest.TestCase):
         s1 = Sphere(0, 0, 5, 3)
         s2 = Sphere(0, 0, 10, 3)
 
-        line = Line(0, 0, 0, 0, 0, 10)
+        line = [(0, 0, 0), (0, 0, 15)]
         sol1 = sphere_intersects_line(s1, line)
         sol2 = sphere_intersects_line(s2, line)
 
-        print sol1
-        print sol2
+        self.assertEquals([(0.0, 0.0, 8.0), (0.0, 0.0, 2.0)], sol1)
+        self.assertEquals([(0.0, 0.0, 13.0), (0.0, 0.0, 7.0)], sol2)
 
     def test_union_multiple(self):
 
@@ -209,6 +211,40 @@ class TestSayCheese(unittest.TestCase):
 
         result = union_multiple(l)
         self.assertEquals([[(0, 0, 0), (0, 0, 10)]], result)
+
+    def test_100_spheres(self):
+
+        '''
+        all the spheres will have the same radius, so we don't
+        have to worry about one inside another.
+        '''
+
+        spheres = []
+        for i in range(100):
+
+            # the range 2..198 ensures that no sphere
+            # will touch a plane boundary
+
+            x = random.randint(2, 198)
+            y = random.randint(2, 198)
+            z = random.randint(2, 198)
+
+            s = Sphere(x, y, z, 1)
+            spheres.append(s)
+
+        # line segment will go from z = 0 to z = 200
+        line_segment = [(random.randint(0, 200),
+                         random.randint(0, 200),
+                         random.randint(0, 200)),
+                        (random.randint(0, 200),
+                         random.randint(0, 200),
+                         random.randint(0, 200))]
+
+        t = process(line_segment, spheres)
+
+        print 'Travel time = %d sec' % (t)
+        
+
 
 if __name__ == '__main__':
     unittest.main()
