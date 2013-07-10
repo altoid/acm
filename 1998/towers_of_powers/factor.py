@@ -3,9 +3,6 @@ def convert_to_base(n, b):
     returns a list of the digits of the number, in base b
     """
 
-    if b > 16:
-        raise Exception('fuck you')
-
     result = []
     residue = n
     place = 1
@@ -13,14 +10,20 @@ def convert_to_base(n, b):
     while residue > 0:
         p = residue % (place * b)
         residue -= p
-        result.append(p/place)  # p/place is the digit
+        digit = p / place
+        if e > b:
+            if digit > 0:
+                s = convert_to_base(e, b)
+                result.append(s)
+        else:
+            result.append(digit)
+
         place *= b
         e += 1
 
-    print '-' * 44
-    print range(e)[::-1]
-    print result[::-1]
-    return result[::-1]
+#    print range(e)
+#    print result
+    return result
 
 
     
