@@ -10,12 +10,12 @@ def convert_to_base(n, b):
     residue = n
     place = 1
     while residue > 0:
-        d = residue % (place * b)
-        residue -= d
-        result.append(str(d/place))
+        p = residue % (place * b)
+        residue -= p
+        result.append(str(p/place))  # p/place is the digit
         place *= b
     
-    return ''.join(result[::-1])
+    return ','.join(result[::-1])
 
 
     
