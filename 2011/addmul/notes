@@ -1,0 +1,3 @@
+idea:  generate all possible programs for a given input; keep the ones that give
+an answer in range.  run each of these for the remaining input.  keep the ones
+still in range and feed them the next input, and so on.
