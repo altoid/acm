@@ -1,0 +1,6 @@
+1.  no route has more than 1 toll
+2.  tolls should minimize cost.
+	e.g. if there are two roads between two intersections, lowest cost one wins.
+
+dijkstra's algorithm to get min cost
+

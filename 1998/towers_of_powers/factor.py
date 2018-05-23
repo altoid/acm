@@ -23,7 +23,7 @@ def convert_to_base(n, b):
 
 #    print range(e)
 #    print result
-    return result
+    return result[::-1]
 
 
     

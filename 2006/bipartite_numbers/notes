@@ -1,0 +1,104 @@
+# bipartite numbers have EXACTLY 2 distinct digits, sss...ttt....   s != 0
+
+for n = 170, halted after 10M iterations
+
+whatever the bp number of 170 is, it is of format nnnn....00000....
+
+find x (rational) where x * 17 = nnnnnnnn....     decimal pt somewhere in there
+
+17 | n * 1111111..... * 10 ** z         (1 <= n <= 9)
+
+
+
+ 1 - 17
+ 2 - 34
+ 3 - 51
+ 4 - 68
+ 5 - 85
+ 6 - 102
+ 7 - 119
+ 8 - 136
+ 9 - 153
+10 - 170
+
+
+1/17 = 
+      .0588235294117647<repeat>
+   +----------------
+17 | 1.0000000000
+       85
+       150
+       136
+        140
+        136
+          40
+	  34
+	   60
+	   51
+	    90
+	    85
+	     50
+	     34
+	     160
+	     153
+	       70
+	       68
+		20
+		17
+		 30
+		 17
+		 130
+		 119
+		  110
+		  102
+		    80
+		    68
+		    120
+		    119
+		      10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      .0 588 235 294 117 647<repeat>
+     
+find a multiple of this that is all the same digit followed
+by 1 or more 0s.
+
+17 | n * 1111111..... * 10 ** z         (1 <= n <= 9)
+
+
+since 17 !| n (because n < 17), 
+
+17 | 1111111..... * 10 ** z
+
+since 17 !| 10 ** z, it must be that 17 | 111111....
+
+
+for multiples of a power of 10, shift the 0s off
+if the result is relatively prime to 2..9, then the answer will be 111111...
+otherwise
+factor out the digits, starting with 9 descending
+
+what if NOT multiple of 10, and all prime factors are greater than 9?  
+e.g. 169, 377
+
+169:   sssttt
+
+169 * n =  s * 1111.....  +  t * 111111111	n > 1
+      		       	 		we don't know n, s, or t
+
+[p1 p2 p3 ... ] * n =  s * 1111.....  +  t * 111111111	n > 1
+
+169 * n MOD s * 1111.... = t * 111111

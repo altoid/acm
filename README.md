@@ -1,4 +1,7 @@
 acm
 ===
 
-acm programming problems
+acm programming problems, found here:
+
+https://icpc.baylor.edu/worldfinals/problems
+
