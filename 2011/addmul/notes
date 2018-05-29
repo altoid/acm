@@ -1,3 +1,21 @@
-idea:  generate all possible programs for a given input; keep the ones that give
-an answer in range.  run each of these for the remaining input.  keep the ones
-still in range and feed them the next input, and so on.
+idea: generate all possible programs for a given input; keep the ones
+that give an answer in range.  run each of these for the remaining
+input.  keep the ones still in range and feed them the next input, and
+so on.
+
+a = 1, m = 3, p = 2, q = 3, r = 22, s = 33
+
+generate
+    helper(List(), 3, 'm')
+        helper(List(m), 9, 'm')
+            helper(List(m m), 27, 'm')
+            return List(m m)
+        helper(List(m), 9, 'a')
+            helper(List(m a), 10, 'm')
+                helper(List(m a m), 30, 'm')
+                return List(m a m)
+            helper(List(m a), 10, 'a')
+                helper(List(m a a), 11, 'm')
+                    helper(List(m a a m), 33, 'm')
+                    return List(m a a m)
+                					 
