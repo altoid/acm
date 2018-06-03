@@ -3,10 +3,37 @@ package addmul
 // file:///Users/dtomm/Downloads/2011WorldFinalProblemSet.pdf
 
 object ProgramOrdering extends Ordering[String] {
-  def compare(a:String, b:String) = {
+  def compare(a: String, b: String) = {
     val cmp = a.length compare b.length
     if (cmp == 0) a compare b
     else cmp
+  }
+}
+
+object InstructionOrdering extends Ordering[Program] {
+  def compareInstructions(a: List[(Int, Char)], b: List[(Int, Char)]): Int = {
+    if (a.isEmpty) -1
+    else if (b.isEmpty) 1
+    else if (a == b) 0
+    else {
+      val ah = a.head
+      val bh = b.head
+
+      if (ah == bh) compareInstructions(a.tail, b.tail)
+      else if (ah._2 != bh._2) ah._2 compare bh._2
+      else if (ah._1 > bh._1) {
+        val newhead = (ah._1 - bh._1, ah._2)
+        compareInstructions(newhead :: a.tail, b.tail)
+      }
+      else {
+        val newhead = (bh._1 - ah._1, ah._2)
+        compareInstructions(a.tail, newhead :: b.tail)
+      }
+    }
+  }
+
+  def compare(a:Program, b:Program): Int = {
+    compareInstructions(a.instructions, b.instructions )
   }
 }
 
@@ -20,6 +47,16 @@ final class Program {
   override def toString(): String = {
     instructions.map(p => p._1.toString + p._2).mkString(" ")
   }
+
+  override def equals(other: Any): Boolean = {
+    other match {
+      case that: Program =>
+        instructions == that.instructions
+      case _ => false
+    }
+  }
+
+  override def hashCode: Int = instructions.##
 
   def addInstructions(count: Int, instr: Char) = {
     assert(instr == 'M' || instr == 'A')

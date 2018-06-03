@@ -4,12 +4,12 @@ import org.scalatest.FunSuite
 
 class ProgramTest extends FunSuite {
   test("isempty") {
-    val p = new Program()
+    val p = new Program
     assert(p.isEmpty)
   }
 
   test("addinstruction") {
-    val p = new Program()
+    val p = new Program
     assert(p.toString() == "")
     p.addInstructions(2, 'M')
     assert(p.toString() == "2M")
@@ -30,5 +30,30 @@ class ProgramTest extends FunSuite {
     p.addInstructions(1, 'M')
 
     assert(p.evaluate(3, 2, 3) == 249)
+  }
+
+  test("equality") {
+    val list1 = List((2, 'M'), (3, 'A'))
+    val list2 = List((2, 'M'), (3, 'A'))
+
+    assert(list1 === list2)
+
+    val p1 = new Program
+    p1.addInstructions(9, 'A')
+
+    val p2 = new Program
+    p2.addInstructions(100, 'A')
+
+    var sortMe = List(p2, p1)
+
+    assert(List(p1, p2) === sortMe.sorted(InstructionOrdering))
+
+    val p3 = new Program
+    p3.addInstructions(9, 'A')
+    p3.addInstructions(1, 'M')
+
+    sortMe = List(p2, p3)
+
+    assert(List(p2, p3) === sortMe.sorted(InstructionOrdering))
   }
 }
