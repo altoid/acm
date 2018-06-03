@@ -10,34 +10,7 @@ object ProgramOrdering extends Ordering[String] {
   }
 }
 
-object InstructionOrdering extends Ordering[Program] {
-  def compareInstructions(a: List[(Int, Char)], b: List[(Int, Char)]): Int = {
-    if (a.isEmpty) -1
-    else if (b.isEmpty) 1
-    else if (a == b) 0
-    else {
-      val ah = a.head
-      val bh = b.head
-
-      if (ah == bh) compareInstructions(a.tail, b.tail)
-      else if (ah._2 != bh._2) ah._2 compare bh._2
-      else if (ah._1 > bh._1) {
-        val newhead = (ah._1 - bh._1, ah._2)
-        compareInstructions(newhead :: a.tail, b.tail)
-      }
-      else {
-        val newhead = (bh._1 - ah._1, ah._2)
-        compareInstructions(a.tail, newhead :: b.tail)
-      }
-    }
-  }
-
-  def compare(a:Program, b:Program): Int = {
-    compareInstructions(a.instructions, b.instructions )
-  }
-}
-
-final class Program {
+final class Program extends Ordered[Program] {
   var instructions: List[(Int, Char)] = List[(Int, Char)]()
 
   def isEmpty: Boolean = {
@@ -88,6 +61,31 @@ final class Program {
 
   def evaluate(input: Int, addend: Int, multiplicand: Int): Int = {
     evaluateHelper(input, addend, multiplicand, instructions)
+  }
+
+  def compareInstructions(a: List[(Int, Char)], b: List[(Int, Char)]): Int = {
+    if (a.isEmpty) -1
+    else if (b.isEmpty) 1
+    else if (a == b) 0
+    else {
+      val ah = a.head
+      val bh = b.head
+
+      if (ah == bh) compareInstructions(a.tail, b.tail)
+      else if (ah._2 != bh._2) ah._2 compare bh._2
+      else if (ah._1 > bh._1) {
+        val newhead = (ah._1 - bh._1, ah._2)
+        compareInstructions(newhead :: a.tail, b.tail)
+      }
+      else {
+        val newhead = (bh._1 - ah._1, ah._2)
+        compareInstructions(a.tail, newhead :: b.tail)
+      }
+    }
+  }
+
+  def compare(that:Program): Int = {
+    compareInstructions(instructions, that.instructions)
   }
 }
 

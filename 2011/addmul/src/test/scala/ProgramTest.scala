@@ -32,6 +32,28 @@ class ProgramTest extends FunSuite {
     assert(p.evaluate(3, 2, 3) == 249)
   }
 
+  test("compare") {
+    val p1 = new Program
+    p1.addInstructions(9, 'A')  // 9A
+
+    val p2 = new Program
+    p2.addInstructions(100, 'A')  // 100A
+
+    assert(p1 < p2)
+
+    val p3 = new Program
+    p3.addInstructions(9, 'A')
+    p3.addInstructions(1, 'M')  // 9A 1M
+
+    assert(p3 > p2)
+
+    val emptyProgram = new Program
+
+    assert(emptyProgram < p1)
+    assert(p1 > emptyProgram)
+    assert(p1 === p1)
+  }
+
   test("equality") {
     val list1 = List((2, 'M'), (3, 'A'))
     val list2 = List((2, 'M'), (3, 'A'))
@@ -46,7 +68,7 @@ class ProgramTest extends FunSuite {
 
     var sortMe = List(p2, p1)
 
-    assert(List(p1, p2) === sortMe.sorted(InstructionOrdering))
+    assert(List(p1, p2) === sortMe.sorted)
 
     val p3 = new Program
     p3.addInstructions(9, 'A')
@@ -54,6 +76,6 @@ class ProgramTest extends FunSuite {
 
     sortMe = List(p2, p3)
 
-    assert(List(p2, p3) === sortMe.sorted(InstructionOrdering))
+    assert(List(p2, p3) === sortMe.sorted)
   }
 }
