@@ -10,6 +10,50 @@ object ProgramOrdering extends Ordering[String] {
   }
 }
 
+final class Program {
+  var instructions: List[(Int, Char)] = List[(Int, Char)]()
+
+  def isEmpty: Boolean = {
+    instructions.isEmpty
+  }
+
+  override def toString(): String = {
+    instructions.map(p => p._1.toString + p._2).mkString(" ")
+  }
+
+  def addInstructions(count: Int, instr: Char) = {
+    assert(instr == 'M' || instr == 'A')
+    assert(count > 0)
+
+    val lastInstr = instructions.lastOption
+    lastInstr match {
+      case Some(x) => {
+        if (x._2 == instr) {
+          val newlast = (x._1 + 1, x._2)
+          instructions = instructions.init :+ newlast
+        }
+        else {
+          instructions = instructions :+ (count, instr)
+        }
+      }
+      case None => instructions = instructions :+ (count, instr)
+    }
+  }
+
+  def evaluateHelper(i: Int, addend: Int, multiplicand: Int, tuples: List[(Int, Char)]): Int = {
+    tuples match {
+      case Nil => i
+      case (n, 'A') :: t => evaluateHelper(i + n * addend, addend, multiplicand, t)
+      case (n, 'M') :: t => evaluateHelper(i * math.pow(multiplicand, n).toInt, addend, multiplicand, t)
+      case _ => throw new IllegalArgumentException(tuples.toString())
+    }
+  }
+
+  def evaluate(input: Int, addend: Int, multiplicand: Int): Int = {
+    evaluateHelper(input, addend, multiplicand, instructions)
+  }
+}
+
 class AddMul(val addend: Int, val multiplicand: Int, val output_lowend: Int, val output_highend: Int) {
   require(addend > 0)
   require(multiplicand > 0)
@@ -40,6 +84,26 @@ class AddMul(val addend: Int, val multiplicand: Int, val output_lowend: Int, val
     }
   }
 
+  def generatePrograms(input: Int): List[String] = {
+    if (multiplicand == 1) {
+      // calculate 'howmany(output_lowend - input, addend).  we subtract addend from lowend
+      // because we have an initial value of addend.
+      val adds = ((output_lowend - input) + (addend - 1)) / addend
+      val result = input + adds * addend
+      if (result > output_highend) List()
+      else {
+        List(result.toString + "A")
+      }
+    }
+    else {
+      val result_by_mult = generateHelper(List(), input, 'M', 1)
+      val result_by_add = generateHelper(List(), input, 'A', 1)
+
+      val result = List(result_by_mult, result_by_add).flatten
+      result
+    }
+  }
+
   def encodeList(prog: List[Char]): List[String] = {
     prog match {
       case Nil => List()
@@ -55,25 +119,6 @@ class AddMul(val addend: Int, val multiplicand: Int, val output_lowend: Int, val
   def encode(program: String): String = {
     // run-length encode a string of As and Ms.
     encodeList(program.toList).mkString(" ")
-  }
-
-  def generatePrograms(input: Int): List[String] = {
-    val result_by_mult = generateHelper(List(), input, 'M', 1)
-    val result_by_add = generateHelper(List(), input, 'A', 1)
-
-    val result = List(result_by_mult, result_by_add).flatten
-    result
-  }
-
-  def bestProgram(input: Int): String = {
-    def mySortFunc(a: String, b: String): Boolean = {
-      // sort by length then lexicographically
-      if (a.length < b.length) true
-      else if (b.length < a.length) false
-      else a < b
-    }
-
-    generatePrograms(input).sortWith(mySortFunc).head
   }
 
   def runHelper(partial_result: Int, program: List[Char]): Int = {

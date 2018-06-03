@@ -4,15 +4,6 @@ import org.scalatest.FunSuite
 
 class AddMulTest extends FunSuite {
 
-  ignore("test1") {
-    val addmul = new AddMul(1, 3, 22, 33)
-
-    val input = 3
-
-    val best = addmul.bestProgram(input)
-    println(s"$input:  $best")
-  }
-
   ignore("running") {
     val addmul = new AddMul(1, 3, 22, 33)
 
@@ -26,17 +17,9 @@ class AddMulTest extends FunSuite {
     assert(result == 45)
   }
 
-  ignore("sorting") {
-    def mySortFunc(a: String, b: String): Boolean = {
-      // sort by length then lexicographically in reverse
-      if (a.length < b.length) true
-      else if (b.length < a.length) false
-      else a > b
-    }
-
+  test("sorting") {
     val t = List("mmm", "aaa", "mm", "am", "ma", "aa")
-    assert(List("mm", "ma", "am", "aa", "mmm", "aaa") == t.sortWith(mySortFunc))
-    assert(List("mm", "ma", "am", "aa", "mmm", "aaa") == t.sorted(ProgramOrdering))
+    assert(List("aa", "am", "ma", "mm", "aaa", "mmm") == t.sorted(ProgramOrdering))
   }
 
   test("encode") {
@@ -71,6 +54,11 @@ class AddMulTest extends FunSuite {
     println(">>>>>>>>>>>>>")
     println(programs.sorted(ProgramOrdering))
     println("<<<<<<<<<<<<<")
+  }
+
+  test("m == 1") {
+    val addmul = new AddMul(1, 1, 10, 20)
+    val solution = addmul.solve(2, 3)
   }
 
   ignore("should be empty program") {
