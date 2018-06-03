@@ -30,6 +30,17 @@ class ProgramTest extends FunSuite {
     p.addInstructions(1, 'M')
 
     assert(p.evaluate(3, 2, 3) == 249)
+
+    val p1 = new Program
+    p1.addInstructions(999999999, 'A')
+    assert(p1.evaluate(1, 1, 1) === 1000000000)
+
+    val p2 = new Program
+    p2.addInstructions(31620, 'A')
+    p2.addInstructions(1, 'M')
+    p2.addInstructions(31621, 'A')
+
+    assert(p2.evaluate(1, 1, 31622) === 999950883)
   }
 
   test("compare") {
