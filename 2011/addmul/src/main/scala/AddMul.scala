@@ -121,8 +121,8 @@ class AddMul(val addend: Int, val multiplicand: Int, val output_lowend: Int, val
 
   def generatePrograms(input: Int): List[String] = {
     if (multiplicand == 1) {
-      // calculate 'howmany(output_lowend - input, addend).  we subtract addend from lowend
-      // because we have an initial value of addend.
+      // calculate 'howmany(output_lowend - input, addend)'.  we subtract addend from lowend
+      // because we have an initial value of 'input'.
       val adds = ((output_lowend - input) + (addend - 1)) / addend
       val result = input + adds * addend
       if (result > output_highend) List()

@@ -59,6 +59,7 @@ class AddMulTest extends FunSuite {
   test("m == 1") {
     val addmul = new AddMul(1, 1, 10, 20)
     val solution = addmul.solve(2, 3)
+    println(solution)
   }
 
   ignore("should be empty program") {
