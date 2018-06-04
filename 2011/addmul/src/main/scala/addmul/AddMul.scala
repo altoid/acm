@@ -2,66 +2,44 @@ package addmul
 
 // file:///Users/dtomm/Downloads/2011WorldFinalProblemSet.pdf
 
-object ProgramOrdering extends Ordering[String] {
-  def compare(a: String, b: String) = {
-    val cmp = a.length compare b.length
-    if (cmp == 0) a compare b
-    else cmp
-  }
-}
+//object ProgramOrdering extends Ordering[String] {
+//  def compare(a: String, b: String) = {
+//    val cmp = a.length compare b.length
+//    if (cmp == 0) a compare b
+//    else cmp
+//  }
+//}
 
-final class Program extends Ordered[Program] {
-  var instructions: List[(Int, Char)] = List[(Int, Char)]()
+class AddMul {
 
-  def isEmpty: Boolean = {
-    instructions.isEmpty
-  }
-
-  override def toString(): String = {
-    instructions.map(p => p._1.toString + p._2).mkString(" ")
-  }
-
-  override def equals(other: Any): Boolean = {
-    other match {
-      case that: Program =>
-        instructions == that.instructions
-      case _ => false
-    }
-  }
-
-  override def hashCode: Int = instructions.##
-
-  def addInstructions(count: Int, instr: Char) = {
-    assert(instr == 'M' || instr == 'A')
-    assert(count > 0)
-
-    val lastInstr = instructions.lastOption
+  def addInstruction(prog: Program, instr: Instruction): Program = {
+    val lastInstr = prog.lastOption
     lastInstr match {
       case Some(x) => {
-        if (x._2 == instr) {
-          val newlast = (x._1 + 1, x._2)
-          instructions = instructions.init :+ newlast
+        if (x.op == instr.op) {
+          prog.init :+ Instruction(x.count + 1, x.op)
         }
         else {
-          instructions = instructions :+ (count, instr)
+          prog :+ instr
         }
       }
-      case None => instructions = instructions :+ (count, instr)
+      case None => prog :+ instr
     }
   }
 
-  def evaluateHelper(i: Int, addend: Int, multiplicand: Int, tuples: List[(Int, Char)]): Int = {
-    tuples match {
-      case Nil => i
-      case (n, 'A') :: t => evaluateHelper(i + n * addend, addend, multiplicand, t)
-      case (n, 'M') :: t => evaluateHelper(i * math.pow(multiplicand, n).toInt, addend, multiplicand, t)
-      case _ => throw new IllegalArgumentException(tuples.toString())
+  def evaluateHelper(program: Program, partial_answer: Int, addend: Int, multiplicand: Int): Int = {
+    program match {
+      case Nil => partial_answer
+      case Instruction(n, 'A') :: t => evaluateHelper(t, partial_answer + n * addend, addend, multiplicand)
+      case Instruction(n, 'M') :: t => evaluateHelper(t, partial_answer * math.pow(multiplicand, n).toInt, addend, multiplicand)
+      case _ => throw new IllegalArgumentException(s"$program")
     }
   }
 
-  def evaluate(input: Int, addend: Int, multiplicand: Int): Int = {
-    evaluateHelper(input, addend, multiplicand, instructions)
+  def evaluate(program: Program, input: Int, addend: Int, multiplicand: Int): Int = {
+    evaluateHelper(program, input, addend, multiplicand)
   }
+}
 
   def compareInstructions(a: List[(Int, Char)], b: List[(Int, Char)]): Int = {
     if (a.isEmpty) -1
@@ -89,7 +67,7 @@ final class Program extends Ordered[Program] {
   }
 }
 
-class AddMul(val addend: Int, val multiplicand: Int, val output_lowend: Int, val output_highend: Int) {
+class xxxxAddMul(val addend: Int, val multiplicand: Int, val output_lowend: Int, val output_highend: Int) {
   require(addend > 0)
   require(multiplicand > 0)
   require(output_lowend > 0)
