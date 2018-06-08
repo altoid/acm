@@ -35,6 +35,63 @@ class AddMul(addend: Int, multiplicand: Int, p: Int, q: Int, r: Int, s: Int) {
   require(p > 0)
   require(q > 0)
   require(p <= q)
+
+  def evaluateHelper(program: Program, partial_answer: Int, addend: Int, multiplicand: Int): Int = {
+    program match {
+      case Nil => partial_answer
+      case Instruction(n, 'A') :: t => evaluateHelper(t, partial_answer + n * addend, addend, multiplicand)
+      case Instruction(n, 'M') :: t => evaluateHelper(t, partial_answer * math.pow(multiplicand, n).toInt, addend, multiplicand)
+      case _ => throw new IllegalArgumentException(s"$program")
+    }
+  }
+
+  def evaluate(program: Program, input: Int): Int = {
+    evaluateHelper(program, input, addend, multiplicand)
+  }
+
+  def generateHelper(partial_program: Program, partial_result: Int, operation: Char, level: Int): List[Program] = {
+    // println(("    " * level) + partial_program mkString " " + ", " + partial_result + ", " + operation)
+
+    val result_of_operation = operation match {
+      case 'M' => partial_result * multiplicand
+      case 'A' => partial_result + addend
+    }
+
+    if (result_of_operation < r) {
+      val newProgram = AddMul.addInstruction(partial_program, (1, operation))
+      val result_by_mult = generateHelper(newProgram, result_of_operation, 'M', level + 1)
+      val result_by_add = generateHelper(newProgram, result_of_operation, 'A', level + 1)
+
+      List(result_by_mult, result_by_add).flatten
+    }
+    else if (result_of_operation >= r && result_of_operation <= s) {
+      List(AddMul.addInstruction(partial_program, Instruction(1, operation)))
+    }
+    else {
+      List()
+    }
+  }
+
+  def generatePrograms(input: Int): List[Program] = {
+    if (multiplicand == 1) {
+      // calculate 'howmany(output_lowend - input, addend)'.  we subtract addend from lowend
+      // because we have an initial value of 'input'.
+      val adds = ((r - input) + (addend - 1)) / addend
+      val result = input + adds * addend
+      if (result > s) List()
+      else {
+        List(AddMul.addInstruction(Program(), Instruction(result, 'A')))
+      }
+    }
+    else {
+      val result_by_mult = generateHelper(Program(), input, 'M', 1)
+      val result_by_add = generateHelper(Program(), input, 'A', 1)
+
+      val result = List(result_by_mult, result_by_add).flatten
+      result
+    }
+  }
+
 }
 
 object AddMul {
@@ -54,19 +111,6 @@ object AddMul {
       case None => prog :+ instr
     }
   }
-
-  def evaluateHelper(program: Program, partial_answer: Int, addend: Int, multiplicand: Int): Int = {
-    program match {
-      case Nil => partial_answer
-      case Instruction(n, 'A') :: t => evaluateHelper(t, partial_answer + n * addend, addend, multiplicand)
-      case Instruction(n, 'M') :: t => evaluateHelper(t, partial_answer * math.pow(multiplicand, n).toInt, addend, multiplicand)
-      case _ => throw new IllegalArgumentException(s"$program")
-    }
-  }
-
-  def evaluate(program: Program, input: Int, addend: Int, multiplicand: Int): Int = {
-    evaluateHelper(program, input, addend, multiplicand)
-  }
 }
 
 
@@ -77,48 +121,6 @@ object AddMul {
 //  require(output_highend > 0)
 //  require(output_lowend <= output_highend)
 //
-//  def generateHelper(partial_program: List[Char], partial_result: Int, operation: Char, level: Int): List[String] = {
-//    println(("    " * level) + partial_program.mkString + ", " + partial_result + ", " + operation)
-//
-//    val result_of_operation = operation match {
-//      case 'M' => partial_result * multiplicand
-//      case 'A' => partial_result + addend
-//    }
-//
-//    if (result_of_operation < output_lowend) {
-//      val result_by_mult = generateHelper(partial_program :+ operation, result_of_operation, 'M', level + 1)
-//      val result_by_add = generateHelper(partial_program :+ operation, result_of_operation, 'A', level + 1)
-//
-//      List(result_by_mult, result_by_add).flatten
-//    }
-//    else if (result_of_operation >= output_lowend && result_of_operation <= output_highend) {
-//      val new_program = partial_program :+ operation
-//      List(new_program.mkString)
-//    }
-//    else {
-//      List()
-//    }
-//  }
-//
-//  def generatePrograms(input: Int): List[String] = {
-//    if (multiplicand == 1) {
-//      // calculate 'howmany(output_lowend - input, addend)'.  we subtract addend from lowend
-//      // because we have an initial value of 'input'.
-//      val adds = ((output_lowend - input) + (addend - 1)) / addend
-//      val result = input + adds * addend
-//      if (result > output_highend) List()
-//      else {
-//        List(result.toString + "A")
-//      }
-//    }
-//    else {
-//      val result_by_mult = generateHelper(List(), input, 'M', 1)
-//      val result_by_add = generateHelper(List(), input, 'A', 1)
-//
-//      val result = List(result_by_mult, result_by_add).flatten
-//      result
-//    }
-//  }
 //
 //  def encodeList(prog: List[Char]): List[String] = {
 //    prog match {

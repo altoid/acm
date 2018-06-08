@@ -19,6 +19,10 @@ class AddMulTest extends FunSuite {
 //    println(a mkString " ")
 //    AddMul.display(a)
     assert("5M 3A 2M" === (a mkString " "))
+
+    a = AddMul.addInstruction(Program(), Instruction(1, 'A'))
+    a = AddMul.addInstruction(a, Instruction(2, 'A'))
+    println(a)
   }
 
   test("running") {
@@ -28,19 +32,28 @@ class AddMulTest extends FunSuite {
     var p = Program()
     p = AddMul.addInstruction(p, (2, 'M'))
 
-    var result = AddMul.evaluate(p, input, 1, 3)
+    var result = addmul.evaluate(p, input)
     assert(result == 27)
 
     p = Program()
     p = AddMul.addInstruction(p, (2, 'A'))
 
-    result = AddMul.evaluate(p, input, 1, 3)
+    result = addmul.evaluate(p, input)
     assert(result == 5)
 
     p = AddMul.addInstruction(p, (2, 'M'))
 
-    result = AddMul.evaluate(p, input, 1, 3)
+    result = addmul.evaluate(p, input)
     assert(result == 45)
+  }
+
+  test("generatePrograms") {
+    val addmul = new AddMul(1, 3, 2, 3, 22, 33)
+
+    val ps = addmul.generatePrograms(3)
+    println(ps)
+    val ps_sorted = ps.sorted(ProgramOrdering)
+    println(ps_sorted)
   }
 
 //  ignore("sorting") {
