@@ -4,10 +4,11 @@ package addmul
 
 object ProgramOrdering extends Ordering[Program]
 {
+  // sort a collection of programs as though they were just strings of As and Ms.
   def compare(a: Program, b: Program): Int = {
-    if (a.isEmpty) -1
-    else if (b.isEmpty) 1
-    else if (a == b) 0
+    val alen = AddMul.length(a)
+    val blen = AddMul.length(b)
+    if (alen != blen) alen - blen
     else {
       val ah = a.head
       val bh = b.head
@@ -110,6 +111,10 @@ object AddMul {
       }
       case None => prog :+ instr
     }
+  }
+
+  def length(p: Program): Int = {
+    p.map(i => i.count).sum
   }
 }
 
