@@ -25,7 +25,7 @@ class AddMulTest extends FunSuite {
     println(a)
   }
 
-  test("running") {
+  test("running a program") {
     val addmul = new AddMul(1, 3, 2, 3, 22, 33)
 
     val input = 3
@@ -47,10 +47,73 @@ class AddMulTest extends FunSuite {
     assert(result == 45)
   }
 
-  test("generatePrograms") {
+  ignore("generatePrograms") {
     val addmul = new AddMul(1, 3, 2, 3, 22, 33)
 
     val ps = addmul.generatePrograms(3)
+    println(ps)
+    val ps_sorted = ps.sorted(ProgramOrdering)
+    println(ps_sorted)
+  }
+
+  test("case 1") {
+    val addmul = new AddMul(1, 2, 2, 3, 10, 20)
+
+    val ps = addmul.generatePrograms(1)
+    println(ps)
+    val ps_sorted = ps.sorted(ProgramOrdering)
+    println(ps_sorted)
+
+    val result = addmul.solve()
+    println(result)
+  }
+
+  test("case 2") {
+    val addmul = new AddMul(1, 3, 2, 3, 22, 33)
+
+    val result = addmul.solve()
+    println(result)
+  }
+
+  test("case 3") {
+    val addmul = new AddMul(3,2,2,3,4,5)
+
+    val result = addmul.solve()
+    println(result)
+  }
+
+  test("case 4") {
+    val addmul = new AddMul(5,3,2,3,2,3)
+
+    val result = addmul.solve()
+    println(result)
+  }
+
+  ignore("case 5, blows stack") {
+    val addmul = new AddMul(4, 13, 2, 6, 478958010, 729952078)
+
+    val result = addmul.solve()
+    println(result)
+  }
+
+  test("case 20") {
+    val addmul = new AddMul(10, 9, 57, 65, 817, 950)
+
+    val result = addmul.solve()
+    println(result)
+  }
+
+  ignore("case 34, blows stack") {
+    val addmul = new AddMul(5, 14, 98, 100, 428229, 6894790)
+
+    val result = addmul.solve()
+    println(result)
+  }
+
+  ignore("case 41") {
+    val addmul = new AddMul(1, 1000000000, 1, 1, 999999999, 999999999)
+
+    val ps = addmul.generatePrograms(1)
     println(ps)
     val ps_sorted = ps.sorted(ProgramOrdering)
     println(ps_sorted)

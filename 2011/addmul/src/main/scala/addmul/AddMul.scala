@@ -51,14 +51,28 @@ class AddMul(addend: Int, multiplicand: Int, p: Int, q: Int, r: Int, s: Int) {
   }
 
   def generateHelper(partial_program: Program, partial_result: Int, operation: Char, level: Int): List[Program] = {
-    // println(("    " * level) + partial_program mkString " " + ", " + partial_result + ", " + operation)
+    // println(("    " * level) + partial_program + ", " + partial_result + ", " + operation)
 
     val result_of_operation = operation match {
       case 'M' => partial_result * multiplicand
       case 'A' => partial_result + addend
     }
 
-    if (result_of_operation < r) {
+    // special case - when operation = 'M' and result_of_operation * multiplicand > s, then we can't
+    // ever use the multiplicand, so short-circuit the appending of A instructions.
+    // cf case 41
+
+    if (partial_result < r && operation == 'M' && result_of_operation > s) {
+      // calculate 'howmany(output_lowend - input, addend)'.  we subtract addend from lowend
+      // because we have an initial value of 'input'.
+      val adds = ((r - partial_result) + (addend - 1)) / addend
+      val result = partial_result + adds * addend
+      if (result > s) List()
+      else {
+        List(AddMul.addInstruction(Program(), Instruction(adds, 'A')))
+      }
+    }
+    else if (result_of_operation < r) {
       val newProgram = AddMul.addInstruction(partial_program, (1, operation))
       val result_by_mult = generateHelper(newProgram, result_of_operation, 'M', level + 1)
       val result_by_add = generateHelper(newProgram, result_of_operation, 'A', level + 1)
@@ -71,6 +85,7 @@ class AddMul(addend: Int, multiplicand: Int, p: Int, q: Int, r: Int, s: Int) {
     else {
       List()
     }
+
   }
 
   def generatePrograms(input: Int): List[Program] = {
@@ -88,8 +103,27 @@ class AddMul(addend: Int, multiplicand: Int, p: Int, q: Int, r: Int, s: Int) {
       val result_by_mult = generateHelper(Program(), input, 'M', 1)
       val result_by_add = generateHelper(Program(), input, 'A', 1)
 
-      val result = List(result_by_mult, result_by_add).flatten
-      result
+      List(result_by_mult, result_by_add).flatten
+    }
+  }
+
+  def solve() = {
+    if (r <= p && q <= s) "empty"
+    else {
+      var programs = generatePrograms(q)
+
+      // println(programs)
+
+      for (k <- p until q) {
+        programs = programs.filter { x =>
+          val result = evaluate(x, k)
+          result >= r && result <= s
+        }
+      }
+      if (programs.isEmpty) "impossible"
+      else {
+        programs.sorted(ProgramOrdering).head mkString " "
+      }
     }
   }
 
